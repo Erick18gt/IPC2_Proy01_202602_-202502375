@@ -8,4 +8,11 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Algoritmo\" />
+    <Folder Include="Misiones\" />
+    <Folder Include="Graphviz\" />
+    <Folder Include="Persistencia\" />
+  </ItemGroup>
+
 </Project>
