@@ -4,7 +4,11 @@ using System.Text;
 
 namespace Proyecto1.Modelo
 {
-    internal class RobotRescue
+    public class RobotRescue : Robot
     {
+        public RobotRescue(string nombre)
+            : base(nombre, "Chapin Rescue")
+        {
+        }
     }
 }

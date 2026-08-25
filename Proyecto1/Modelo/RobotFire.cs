@@ -4,7 +4,14 @@ using System.Text;
 
 namespace Proyecto1.Modelo
 {
-    internal class RobotFire
+    public class RobotFire : Robot
     {
+        public int CapacidadCombate { get; set; }
+
+        public RobotFire(string nombre, int capacidadCombate)
+            : base(nombre, "Chapin Fire")
+        {
+            CapacidadCombate = capacidadCombate;
+        }
     }
 }

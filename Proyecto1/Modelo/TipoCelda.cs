@@ -11,6 +11,6 @@ namespace Proyecto1.Modelo
         Militar,
         Civil,
         Recurso,
-        Intransitable,
+        Intransitable
     }
 }

@@ -9,10 +9,13 @@ namespace Proyecto1.Modelo
         public int Fila { get; set; }
         public int Columna { get; set; }
         public TipoCelda Tipo { get; set; }
+        public bool Visitada { get; set; }
         public Celda(int fila, int columna, TipoCelda tipo) {
            Fila = fila;
            Columna = columna;
            Tipo = tipo;
+            Visitada = false;
+
         }
 
     }

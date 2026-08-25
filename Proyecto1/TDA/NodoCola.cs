@@ -4,7 +4,15 @@ using System.Text;
 
 namespace Proyecto1.TDA
 {
-    internal class NodoCola
+    public class NodoCola<T>
     {
+        public T Dato { get; set; }
+        public NodoCola<T> Siguiente { get; set; }
+
+        public NodoCola(T dato)
+        {
+            Dato = dato;
+            Siguiente = null;
+        }
     }
 }
