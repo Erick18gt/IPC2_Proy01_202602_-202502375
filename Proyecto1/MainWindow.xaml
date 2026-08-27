@@ -1,46 +1,59 @@
-﻿<Window x:Class="Proyecto1.MainWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Chapin Warriors"
-        Height="600"
-        Width="1000">
+<Window x:Class="Proyecto1.MainWindow"
+       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+       Title="Chapin Warriors"
+       Height="750"
+       Width="1250">
 
-    <Grid Margin="20">
-
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="320"/>
+        </Grid.ColumnDefinitions>
 
-            <Button x:Name="btnCargar"
-                    Content="Cargar XML"
-                    Width="120"
-                    Height="35"
-                    Click="BtnCargar_Click"/>
-
-            <TextBlock x:Name="txtArchivo"
-                       Margin="15,0,0,0"
-                       VerticalAlignment="Center"/>
+        <!-- Barra superior -->
+        <StackPanel Orientation="Horizontal" Margin="10" Grid.Row="0" Grid.ColumnSpan="2">
+            <Button x:Name="btnCargarXML" Content="Cargar XML" Width="120" Height="35" Click="CargarXML_Click"/>
+            <TextBlock x:Name="txtEstado" Margin="20,8,0,0" FontSize="14"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1"
-                    Orientation="Horizontal"
-                    Margin="0,20,0,20">
+        <!-- Mapa -->
+        <Border Grid.Row="1" Grid.Column="0" Margin="10" BorderBrush="Black" BorderThickness="1">
+            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Canvas x:Name="canvasMalla" Background="White"/>
+            </ScrollViewer>
+        </Border>
 
-            <TextBlock Text="Ciudad:"
-                       VerticalAlignment="Center"/>
+        <!-- Panel de control de misión -->
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0,10,10,10">
 
-            <ComboBox x:Name="cmbCiudades"
-                      Width="250"
-                      Margin="10,0,0,0"/>
+            <TextBlock Text="1. Ciudad" FontWeight="Bold"/>
+            <ComboBox x:Name="cmbCiudades" Margin="0,3,0,10" SelectionChanged="cmbCiudades_SelectionChanged"/>
+
+            <TextBlock Text="2. Tipo de misión" FontWeight="Bold"/>
+            <ComboBox x:Name="cmbTipoMision" Margin="0,3,0,10" SelectionChanged="cmbTipoMision_SelectionChanged"/>
+
+            <TextBlock Text="3. Robot" FontWeight="Bold"/>
+            <ComboBox x:Name="cmbRobots" Margin="0,3,0,10"/>
+
+            <TextBlock Text="4. Objetivo (civil / recurso)" FontWeight="Bold"/>
+            <ComboBox x:Name="cmbObjetivo" Margin="0,3,0,15"/>
+
+            <Button x:Name="btnEjecutar" Content="Ejecutar misión" Height="35" Click="Ejecutar_Click"/>
+
+            <TextBlock Text="Resultado" FontWeight="Bold" Margin="0,20,0,3"/>
+            <Border BorderBrush="Gray" BorderThickness="1" Padding="6" MinHeight="140">
+                <TextBlock x:Name="txtResultado" TextWrapping="Wrap" FontFamily="Consolas"/>
+            </Border>
+
+            <TextBlock Text="Leyenda" FontWeight="Bold" Margin="0,20,0,3"/>
+            <StackPanel x:Name="panelLeyenda"/>
+
         </StackPanel>
-
-        <Grid x:Name="gridCiudad"
-              Grid.Row="2"/>
-
     </Grid>
-
 </Window>

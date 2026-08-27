@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Proyecto1.Modelo
+namespace Proyecto1.Modelos
 {
     public enum TipoMision
     {
@@ -19,12 +15,7 @@ namespace Proyecto1.Modelo
         public int FilaObjetivo { get; set; }
         public int ColumnaObjetivo { get; set; }
 
-        public Mision(
-            TipoMision tipo,
-            Ciudad ciudad,
-            Robot robot,
-            int filaObjetivo,
-            int columnaObjetivo)
+        public Mision(TipoMision tipo, Ciudad ciudad, Robot robot, int filaObjetivo, int columnaObjetivo)
         {
             Tipo = tipo;
             Ciudad = ciudad;

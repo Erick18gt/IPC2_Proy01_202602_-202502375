@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 
 namespace Proyecto1.TDA
 {
@@ -15,16 +13,16 @@ namespace Proyecto1.TDA
             get { return cantidad; }
         }
 
-        public bool EstaVacia()
-        {
-            return primero == null;
-        }
-
         public Cola()
         {
             primero = null;
             ultimo = null;
             cantidad = 0;
+        }
+
+        public bool EstaVacia()
+        {
+            return primero == null;
         }
 
         public void Encolar(T dato)
@@ -53,7 +51,6 @@ namespace Proyecto1.TDA
             }
 
             T dato = primero.Dato;
-
             primero = primero.Siguiente;
 
             if (primero == null)

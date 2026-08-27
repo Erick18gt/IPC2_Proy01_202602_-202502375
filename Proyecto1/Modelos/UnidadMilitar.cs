@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Proyecto1.Modelo
+namespace Proyecto1.Modelos
 {
     public class UnidadMilitar
     {
@@ -10,11 +6,11 @@ namespace Proyecto1.Modelo
         public int Columna { get; set; }
         public int CapacidadCombate { get; set; }
 
-        public UnidadMilitar(int fila, int columna, int capacidadCombate) {
+        public UnidadMilitar(int fila, int columna, int capacidadCombate)
+        {
             Fila = fila;
             Columna = columna;
             CapacidadCombate = capacidadCombate;
         }
     }
 }
-

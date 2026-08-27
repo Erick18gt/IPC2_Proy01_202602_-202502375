@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Proyecto1.Modelo
+namespace Proyecto1.Modelos
 {
     public abstract class Robot
     {
