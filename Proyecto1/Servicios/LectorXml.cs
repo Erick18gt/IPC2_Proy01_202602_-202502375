@@ -36,7 +36,6 @@ namespace Proyecto1.Servicios
 
                 Ciudad ciudad = new Ciudad(nombre, filas, columnas);
 
-                // 1. Cargar todas las celdas base a partir de las etiquetas <fila>
                 XmlNodeList nodosFila = nodoCiudad.SelectNodes("fila");
                 if (nodosFila != null)
                 {
@@ -45,9 +44,7 @@ namespace Proyecto1.Servicios
                         int numeroFila = int.Parse(nodoFila.Attributes["numero"].Value);
                         string contenido = nodoFila.InnerText.Trim('\r', '\n');
 
-                        // OJO: no usar .Trim() a secas aquí, porque un espacio (' ') es un
-                        // carácter válido (Camino) y podría estar al inicio/fin de la fila.
-                        // Solo recortamos saltos de línea que a veces mete el XML al formatear.
+                        
 
                         for (int columna = 0; columna < contenido.Length; columna++)
                         {
@@ -60,8 +57,7 @@ namespace Proyecto1.Servicios
                     }
                 }
 
-                // 2. Procesar <unidadMilitar>: estas celdas ya existen como "Camino" (espacio)
-                //    dentro de la malla, hay que convertirlas a Militar y guardar su capacidad.
+ 
                 XmlNodeList nodosMilitar = nodoCiudad.SelectNodes("unidadMilitar");
                 if (nodosMilitar != null)
                 {
@@ -74,7 +70,7 @@ namespace Proyecto1.Servicios
                         Celda celdaMilitar = new Celda(filaMilitar, columnaMilitar, TipoCelda.Militar);
                         celdaMilitar.CapacidadMilitar = capacidad;
 
-                        // Reemplaza la celda "Camino" que ya existía por la celda "Militar"
+                        
                         ciudad.Malla.ActualizarCelda(celdaMilitar);
 
                         ciudad.UnidadesMilitares.Agregar(
@@ -113,7 +109,7 @@ namespace Proyecto1.Servicios
                 }
                 else
                 {
-                    // Tipo desconocido en el XML: lo ignoramos en lugar de reventar la carga.
+                   
                     continue;
                 }
 

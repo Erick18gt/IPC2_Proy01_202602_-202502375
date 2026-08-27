@@ -14,9 +14,7 @@ namespace Proyecto1.Servicios
             Robots = new Lista<Robot>();
         }
 
-        // Carga un archivo de configuración y fusiona su contenido con lo que ya
-        // había: si el nombre de ciudad o robot ya existe, se actualiza (se reemplaza);
-        // si no existe, se agrega. Esto cumple el requisito de poder cargar varios XML.
+        
         public void CargarArchivo(string ruta)
         {
             LectorXML lector = new LectorXML();

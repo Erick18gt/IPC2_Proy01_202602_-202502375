@@ -10,7 +10,6 @@ namespace Proyecto1.Modelos
 
         public MatrizOrtogonal Malla { get; set; }
 
-        // Antes era "object" (mal). Ahora es una lista tipada con tu propio TDA.
         public Lista<UnidadMilitar> UnidadesMilitares { get; set; }
 
         public Ciudad(string nombre, int filas, int columnas)

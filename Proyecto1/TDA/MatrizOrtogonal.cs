@@ -63,9 +63,7 @@ namespace Proyecto1.TDA
             return nodos[fila - 1, columna - 1];
         }
 
-        // NUEVO: permite actualizar una celda ya insertada (lo usa el LectorXML al
-        // procesar <unidadMilitar>, ya que esa celda ya existe como Camino y hay que
-        // convertirla en Militar sin romper los enlaces Arriba/Abajo/Izquierda/Derecha).
+
         public void ActualizarCelda(Celda celdaActualizada)
         {
             NodoMatriz nodo = ObtenerNodo(celdaActualizada.Fila, celdaActualizada.Columna);
@@ -90,8 +88,7 @@ namespace Proyecto1.TDA
             }
         }
 
-        // NUEVO: recorre toda la malla y devuelve las celdas de un tipo específico.
-        // Se usa para encontrar puntos de entrada, civiles y recursos.
+
         public Lista<Celda> ObtenerCeldasPorTipo(TipoCelda tipo)
         {
             Lista<Celda> resultado = new Lista<Celda>();

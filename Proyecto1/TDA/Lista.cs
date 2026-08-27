@@ -84,7 +84,6 @@ namespace Proyecto1.TDA
             cantidad--;
         }
 
-        // NUEVO: reemplaza el dato en una posición específica (para "actualizar" ciudades/robots repetidos)
         public void Reemplazar(int indice, T dato)
         {
             if (indice < 0 || indice >= cantidad)
@@ -101,9 +100,7 @@ namespace Proyecto1.TDA
             actual.Dato = dato;
         }
 
-        // NUEVO: busca el índice del primer elemento que cumple la condición, o -1 si no existe.
-        // Usamos Predicate<T> (delegado del propio lenguaje, no es una colección de C#), por lo
-        // que no viola la restricción de no usar List/Queue/Stack.
+
         public int BuscarIndice(Predicate<T> condicion)
         {
             Nodo<T> actual = primero;

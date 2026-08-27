@@ -1,7 +1,9 @@
 using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using Proyecto1.Modelos;
@@ -14,8 +16,10 @@ namespace Proyecto1
     {
         private SistemaControl sistema;
         private BuscadorCaminos buscador;
+        private GeneradorGraphviz generadorGraphviz;
 
-        private const int TamanoCelda = 26;
+        private readonly string carpetaSalidaGraphviz =
+            System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "GraphvizOutput");
 
         public MainWindow()
         {
@@ -23,13 +27,11 @@ namespace Proyecto1
 
             sistema = new SistemaControl();
             buscador = new BuscadorCaminos();
+            generadorGraphviz = new GeneradorGraphviz();
 
             DibujarLeyenda();
         }
 
-        // -----------------------------------------------------------
-        // Carga de XML
-        // -----------------------------------------------------------
         private void CargarXML_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog dialogo = new OpenFileDialog();
@@ -52,9 +54,7 @@ namespace Proyecto1
 
         private void PoblarCiudades()
         {
-            // Recorremos nuestro propio TDA (Lista<Ciudad>) manualmente y agregamos
-            // cada elemento uno por uno con Items.Add. NO se usa ItemsSource con
-            // ningún arreglo/List/ObservableCollection.
+          
             cmbCiudades.Items.Clear();
 
             for (int i = 0; i < sistema.Ciudades.Cantidad; i++)
@@ -68,9 +68,7 @@ namespace Proyecto1
             }
         }
 
-        // -----------------------------------------------------------
-        // Cascada de selección: Ciudad -> Tipo de misión -> Robot / Objetivo
-        // -----------------------------------------------------------
+  
         private void cmbCiudades_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             Ciudad ciudad = cmbCiudades.SelectedItem as Ciudad;
@@ -79,12 +77,11 @@ namespace Proyecto1
             cmbRobots.Items.Clear();
             cmbObjetivo.Items.Clear();
             txtResultado.Text = "";
-            canvasMalla.Children.Clear();
+            imgMalla.Source = null;
 
             if (ciudad == null) return;
 
-            // Aquí no recorremos un TDA porque solo son dos posibles textos fijos,
-            // pero los agregamos directo a Items (sin ItemsSource ni colección intermedia).
+
             if (ciudad.TieneCiviles())
             {
                 cmbTipoMision.Items.Add("Rescate");
@@ -100,7 +97,7 @@ namespace Proyecto1
                 cmbTipoMision.SelectedIndex = 0;
             }
 
-            DibujarMalla(ciudad, null);
+            MostrarMision(ciudad, null);
         }
 
         private void cmbTipoMision_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -146,9 +143,7 @@ namespace Proyecto1
             if (cmbObjetivo.Items.Count > 0) cmbObjetivo.SelectedIndex = 0;
         }
 
-        // -----------------------------------------------------------
-        // Ejecutar misión
-        // -----------------------------------------------------------
+
         private void Ejecutar_Click(object sender, RoutedEventArgs e)
         {
             Ciudad ciudad = cmbCiudades.SelectedItem as Ciudad;
@@ -192,7 +187,7 @@ namespace Proyecto1
             if (camino == null)
             {
                 txtResultado.Text = "Misión Imposible";
-                DibujarMalla(ciudad, null);
+                MostrarMision(ciudad, null);
                 return;
             }
 
@@ -201,7 +196,7 @@ namespace Proyecto1
                 "Unidad civil rescatada: " + civil.Fila + "," + civil.Columna + "\n" +
                 "Robot utilizado: " + robot.Nombre + " (ChapinRescue)";
 
-            DibujarMalla(ciudad, camino);
+            MostrarMision(ciudad, camino);
         }
 
         private void EjecutarExtraccion(Ciudad ciudad, RobotFighter robot, Celda recurso)
@@ -212,7 +207,7 @@ namespace Proyecto1
             if (resultado == null)
             {
                 txtResultado.Text = "Misión Imposible";
-                DibujarMalla(ciudad, null);
+                MostrarMision(ciudad, null);
                 return;
             }
 
@@ -222,74 +217,37 @@ namespace Proyecto1
                 "Robot utilizado: " + robot.Nombre + " (ChapinFighter - Capacidad de combate inicial "
                 + robot.CapacidadCombate + ", Capacidad de combate final " + resultado.CapacidadFinal + ")";
 
-            DibujarMalla(ciudad, resultado.Camino);
+            MostrarMision(ciudad, resultado.Camino);
         }
 
-        // -----------------------------------------------------------
-        // Dibujo del mapa (versión provisional con WPF; se reemplaza por
-        // Graphviz en el siguiente paso sin tocar la lógica de arriba)
-        // -----------------------------------------------------------
-        private void DibujarMalla(Ciudad ciudad, Lista<Celda> camino)
+     
+        private void MostrarMision(Ciudad ciudad, Lista<Celda> camino)
         {
-            canvasMalla.Children.Clear();
-            canvasMalla.Width = ciudad.Columnas * TamanoCelda;
-            canvasMalla.Height = ciudad.Filas * TamanoCelda;
-
-            bool[,] enCamino = new bool[ciudad.Filas, ciudad.Columnas];
-            if (camino != null)
+            try
             {
-                for (int i = 0; i < camino.Cantidad; i++)
-                {
-                    Celda c = camino.Obtener(i);
-                    enCamino[c.Fila - 1, c.Columna - 1] = true;
-                }
+                string rutaPng = generadorGraphviz.GenerarImagen(ciudad, camino, carpetaSalidaGraphviz);
+                imgMalla.Source = CargarImagenSinBloqueo(rutaPng);
             }
-
-            for (int fila = 1; fila <= ciudad.Filas; fila++)
+            catch (Exception ex)
             {
-                for (int columna = 1; columna <= ciudad.Columnas; columna++)
-                {
-                    var nodo = ciudad.Malla.ObtenerNodo(fila, columna);
-                    if (nodo == null) continue;
-
-                    Celda celda = nodo.Dato;
-                    Brush color = ColorDeCelda(celda.Tipo);
-
-                    // Si la celda es parte del camino Y es "de paso" (Camino/Entrada),
-                    // la resaltamos en naranja como en el ejemplo del enunciado.
-                    bool esDePaso = celda.Tipo == TipoCelda.Camino || celda.Tipo == TipoCelda.Entrada;
-                    if (enCamino[fila - 1, columna - 1] && esDePaso)
-                    {
-                        color = Brushes.Orange;
-                    }
-
-                    Rectangle rect = new Rectangle
-                    {
-                        Width = TamanoCelda - 1,
-                        Height = TamanoCelda - 1,
-                        Fill = color,
-                        Stroke = Brushes.Gray,
-                        StrokeThickness = 0.5
-                    };
-
-                    Canvas.SetLeft(rect, (columna - 1) * TamanoCelda);
-                    Canvas.SetTop(rect, (fila - 1) * TamanoCelda);
-                    canvasMalla.Children.Add(rect);
-                }
+                MessageBox.Show("No se pudo generar el gráfico con Graphviz:\n" + ex.Message,
+                    "Error de Graphviz", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private Brush ColorDeCelda(TipoCelda tipo)
+        private BitmapImage CargarImagenSinBloqueo(string rutaPng)
         {
-            switch (tipo)
+            byte[] bytes = File.ReadAllBytes(rutaPng);
+
+            using (MemoryStream ms = new MemoryStream(bytes))
             {
-                case TipoCelda.Intransitable: return Brushes.Black;
-                case TipoCelda.Entrada: return Brushes.LightGreen;
-                case TipoCelda.Camino: return Brushes.White;
-                case TipoCelda.Militar: return Brushes.Red;
-                case TipoCelda.Civil: return Brushes.DodgerBlue;
-                case TipoCelda.Recurso: return Brushes.Gray;
-                default: return Brushes.White;
+                BitmapImage bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.StreamSource = ms;
+                bitmap.EndInit();
+                bitmap.Freeze();
+                return bitmap;
             }
         }
 

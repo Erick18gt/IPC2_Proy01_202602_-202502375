@@ -22,11 +22,11 @@
             <TextBlock x:Name="txtEstado" Margin="20,8,0,0" FontSize="14"/>
         </StackPanel>
 
-        <!-- Mapa -->
+        <!-- Mapa (generado por Graphviz) -->
         <Border Grid.Row="1" Grid.Column="0" Margin="10" BorderBrush="Black" BorderThickness="1">
-            <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                <Canvas x:Name="canvasMalla" Background="White"/>
-            </ScrollViewer>
+            <Viewbox Stretch="Uniform" StretchDirection="Both">
+                <Image x:Name="imgMalla"/>
+            </Viewbox>
         </Border>
 
         <!-- Panel de control de misión -->

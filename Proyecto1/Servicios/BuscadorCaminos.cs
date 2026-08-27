@@ -5,13 +5,9 @@ namespace Proyecto1.Servicios
 {
     public class BuscadorCaminos
     {
-        // ---------------------------------------------------------------
-        // MISIÓN DE RESCATE
-        // Recorre la malla con BFS desde el punto de entrada hasta la
-        // unidad civil, sin pasar NUNCA por una celda de tipo Militar
-        // (ni Recurso ni Intransitable). Si no hay camino, regresa null,
-        // lo que el llamador debe interpretar como "Misión Imposible".
-        // ---------------------------------------------------------------
+  
+   
+
         public Lista<Celda> BuscarCaminoRescate(
             Ciudad ciudad,
             int filaCivil, int columnaCivil)
@@ -20,8 +16,6 @@ namespace Proyecto1.Servicios
 
             Cola<NodoMatriz> cola = new Cola<NodoMatriz>();
 
-            // Multi-origen: encolamos TODOS los puntos de entrada de la ciudad.
-            // El BFS encontrará el camino más corto sin importar por cuál se entre.
             Lista<Celda> entradas = ciudad.ObtenerPuntosEntrada();
             for (int i = 0; i < entradas.Cantidad; i++)
             {
@@ -52,9 +46,7 @@ namespace Proyecto1.Servicios
 
                     bool esDestino = vecino.Dato.Fila == filaCivil && vecino.Dato.Columna == columnaCivil;
 
-                    // El destino solo es válido si realmente es la celda Civil buscada.
-                    // Cualquier otra celda debe ser Camino, Entrada o Civil (nunca Militar,
-                    // Recurso ni Intransitable) para que el camino sea "seguro".
+                  
                     if (!esDestino && !EsTransitableParaRescate(vecino.Dato)) continue;
                     if (esDestino && vecino.Dato.Tipo != TipoCelda.Civil) continue;
 
@@ -76,16 +68,7 @@ namespace Proyecto1.Servicios
                 || celda.Tipo == TipoCelda.Civil;
         }
 
-        // ---------------------------------------------------------------
-        // MISIÓN DE EXTRACCIÓN DE RECURSOS
-        // BFS "con estado": cada elemento de la cola guarda además cuánta
-        // capacidad de combate le queda al robot en ese punto del camino.
-        // Puede atravesar una celda Militar solo si su capacidad restante
-        // es MAYOR a la capacidad de esa unidad militar, y al hacerlo resta
-        // esa capacidad. Se poda la búsqueda descartando revisitar una
-        // celda si ya la alcanzamos antes con capacidad igual o mejor
-        // (así no explota en tamaño y siempre progresa).
-        // ---------------------------------------------------------------
+ 
         public ResultadoExtraccion BuscarCaminoExtraccion(
             Ciudad ciudad,
             int filaRecurso, int columnaRecurso,
@@ -101,7 +84,7 @@ namespace Proyecto1.Servicios
 
             Cola<NodoBusqueda> cola = new Cola<NodoBusqueda>();
 
-            // Multi-origen: igual que en rescate, se prueba desde todos los puntos de entrada.
+       
             Lista<Celda> entradas = ciudad.ObtenerPuntosEntrada();
             for (int i = 0; i < entradas.Cantidad; i++)
             {
@@ -142,27 +125,24 @@ namespace Proyecto1.Servicios
 
                     if (esDestino)
                     {
-                        // Solo se permite "entrar" a una celda Recurso si es justo el
-                        // recurso que se quiere extraer (una celda Recurso normal jamás
-                        // es transitable, según el enunciado).
+                
                         if (celdaVecino.Tipo != TipoCelda.Recurso) continue;
                     }
                     else
                     {
                         if (celdaVecino.Tipo == TipoCelda.Intransitable) continue;
-                        if (celdaVecino.Tipo == TipoCelda.Recurso) continue; // no es el objetivo: no se puede pisar
-
+                        if (celdaVecino.Tipo == TipoCelda.Recurso) continue; 
                         if (celdaVecino.Tipo == TipoCelda.Militar)
                         {
                             if (actual.CapacidadRestante <= celdaVecino.CapacidadMilitar)
                             {
-                                continue; // no la puede vencer, este camino no sirve
+                                continue;
                             }
 
                             capacidadResultante = actual.CapacidadRestante - celdaVecino.CapacidadMilitar;
                         }
 
-                        // Camino, Entrada o Civil: transitable sin costo de capacidad.
+                       
                     }
 
                     int filaIdx = celdaVecino.Fila - 1;
@@ -170,7 +150,7 @@ namespace Proyecto1.Servicios
 
                     if (capacidadResultante <= mejorCapacidad[filaIdx, columnaIdx])
                     {
-                        continue; // ya llegamos aquí antes con capacidad igual o mejor
+                        continue; /
                     }
 
                     mejorCapacidad[filaIdx, columnaIdx] = capacidadResultante;
@@ -186,9 +166,7 @@ namespace Proyecto1.Servicios
             return new ResultadoExtraccion(camino, encontrado.CapacidadRestante);
         }
 
-        // ---------------------------------------------------------------
-        // Utilidades comunes
-        // ---------------------------------------------------------------
+    
         private NodoMatriz[] ObtenerVecinos(NodoMatriz nodo)
         {
             return new NodoMatriz[] { nodo.Arriba, nodo.Abajo, nodo.Izquierda, nodo.Derecha };
@@ -222,9 +200,6 @@ namespace Proyecto1.Servicios
             return InvertirLista(invertido);
         }
 
-        // Lista<T> solo tiene Agregar (al final), así que para "invertir" el camino
-        // (que se arma de destino -> origen siguiendo Padre) recorremos al revés
-        // con índices y lo volvemos a construir en el orden correcto (origen -> destino).
         private Lista<Celda> InvertirLista(Lista<Celda> lista)
         {
             Lista<Celda> resultado = new Lista<Celda>();
