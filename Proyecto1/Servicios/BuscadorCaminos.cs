@@ -150,7 +150,7 @@ namespace Proyecto1.Servicios
 
                     if (capacidadResultante <= mejorCapacidad[filaIdx, columnaIdx])
                     {
-                        continue; /
+                        continue; 
                     }
 
                     mejorCapacidad[filaIdx, columnaIdx] = capacidadResultante;
